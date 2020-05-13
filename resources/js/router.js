@@ -1,21 +1,23 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Panel from './components/pages/Panel';
-import Hooks from './components/pages/basic/Hooks';
+import MainApp from './components/MainApp';
+
+
+//project Pages
+import Home from './components/pages/Home';
+import Tags from './components/pages/Tags'
 
 Vue.use(VueRouter);
 
 const routes = [
     {
-        path: '/panel',
-        component: Panel
+        path: '/home',
+        component: Home
     },
-
-    // vue hooks
     {
-        path: '/hooks',
-        component: Hooks
-    }
+        path: '/tags',
+        component: Tags
+    },
 ];
 
 const router = new VueRouter({
