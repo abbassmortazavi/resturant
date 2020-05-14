@@ -11,6 +11,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('new' , 'TestController@index');
+Route::post('/addTag' , 'AdminController@addTag');
+Route::get('/getAllTags' , 'AdminController@getAllTags');
 Route::any('{slug}' , function(){
     return view('welcome');
 });
