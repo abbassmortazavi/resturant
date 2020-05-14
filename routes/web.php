@@ -12,6 +12,7 @@ Route::get('/', function () {
 });
 Route::get('new' , 'TestController@index');
 Route::post('/addTag' , 'AdminController@addTag');
+Route::post('/updateTag' , 'AdminController@updateTag');
 Route::get('/getAllTags' , 'AdminController@getAllTags');
 Route::any('{slug}' , function(){
     return view('welcome');
