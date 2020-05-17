@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Tag;
 use Illuminate\Http\Request;
 
@@ -26,12 +27,19 @@ class AdminController extends Controller
         ]);
        
     }
+    public function deleteTag(Request $request)
+    {
+        return Tag::where('id' , $request->id)->delete();
+    }
     public function getAllTags()
     {
         return Tag::orderBy('id' , 'desc')->get();
     }
     public function uploadImage(Request $request)
     {
+        $this->validate($request , [
+            'file'=>'required|mimes:jpeg,jpg,png'
+        ]);
         $file = time().'.'.$request->file->extension();
         $path = '/uploads';
         $request->file->move(public_path($path) , $file);
@@ -45,5 +53,45 @@ class AdminController extends Controller
             unlink($path);
         }
         return 'done';
+    }
+    public function insertCategory(Request $request)
+    {
+       // return $request->all();
+        $this->validate($request , [
+            'name'=>'required',
+            'image'=>'required'
+        ]);
+        return Category::create([
+            'name'=>$request->name,
+            'image'=>$request->image
+        ]);
+    }
+    public function getAllCategories()
+    {
+        return Category::orderBy('id' , 'desc')->get();
+    }
+    public function deleteCategory(Request $request)
+    {
+        return Category::where('id' , $request->id)->delete();
+    }
+
+    public function updateCategory(Request $request)
+    {
+        $this->validate($request , [
+            'name'=>'required'
+        ]);
+        $category = Category::where('id' , $request->id)->first();
+        if($request->image != $category->image)
+        {
+            $image = $request->image;
+        }else{
+            $image = $category->image;
+        }
+        
+        $category->update([
+            'name'=>$request->name,
+            'image'=>$image
+        ]);
+       
     }
 }

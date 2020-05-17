@@ -17,7 +17,7 @@
                   <div class="col-12">
                     <div class="card">
                       <div class="card-header">
-                        <h3 class="card-title">Category <Button @click="AddTags"><Icon type="md-add" />Add Category</Button></h3>
+                        <h3 class="card-title">Category <Button @click="AddCategory"><Icon type="md-add" />Add Category</Button></h3>
 
                         <div class="card-tools">
                           <div class="input-group input-group-sm" style="width: 150px;">
@@ -42,19 +42,21 @@
                           <thead>
                             <tr>
                               <th>ID</th>
-                              <th>Tag Name</th>
-                              <th>Created at</th>
+                              <th>Category Name</th>
+                              <th>Image</th>
                               <th>Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr v-for="tag in tags" :key="tag.id">
-                              <td>{{ tag.id }}</td>
-                              <td>{{ tag.name }}</td>
-                              <td>{{ tag.created_at }}</td>
+                            <tr v-for="category in categories" :key="category.id">
+                              <td>{{ category.id }}</td>
+                              <td>{{ category.name }}</td>
                               <td>
-                                <Button type="warning" size="small" @click="edit(tag)"><i class="fa fa-pencil-alt text-white mr-1"></i>Edit</Button>
-                                <Button type="error" size="small" @click="deleteTag(tag)"><i class="fa fa-trash-alt text-white mr-1"></i>Delete</Button>
+                                <img :src="`/uploads/${category.image}`" width="100" height="100"/>
+                              </td>
+                              <td>
+                                <Button type="warning" size="small" @click="edit(category)"><i class="fa fa-pencil-alt text-white mr-1"></i>Edit</Button>
+                                <Button type="error" size="small" @click="deletecategory(category)"><i class="fa fa-trash-alt text-white mr-1"></i>Delete</Button>
                                 <!-- <a class="btn btn-danger btn-sm"><i class="fa fa-trash-alt text-white mr-1"></i>Delete</a>
                                 <a class="btn btn-info btn-sm"><i class="fa fa-pencil-alt text-white mr-1"></i>Edit</a> -->
                               </td>
@@ -70,7 +72,7 @@
                     <!-- Add Tag With modal -->
                     <template>
                       <Modal
-                          v-model="modalAddTag"
+                          v-model="modalCategory"
                           :title="title"
                           :closable="true"
                           >
@@ -90,6 +92,7 @@
                                 <p>Click or drag files here to upload</p>
                             </div>
                         </Upload>
+                        <small class="alert alert-danger" v-show="errors.image" v-if="errors && errors.image">{{ errors.image[0] }}</small>
                         <div class="image_thumb" v-if="data.image">
                           <div class="demo-upload-list-cover">
                               <Icon type="md-trash" @click="deleteImage" />
@@ -101,9 +104,9 @@
                            <Input v-model="data.name" placeholder="Enter something..." style="width: 300px" />
                            <small class="alert alert-danger" v-if="errors && errors.name">{{ errors.name[0] }}</small>
                           <div slot="footer">
-                            <Button type="default" @click="modalAddTag=false">Close</Button>
-                            <Button type="primary" v-show="!editMode" @click="addTag">Add Tag</Button>
-                            <Button type="warning" v-show="editMode" @click="updateTag">Update Tag</Button>
+                            <Button type="default" @click="modalCategory=false">Close</Button>
+                            <Button type="primary" v-show="!editMode" @click="insertCategory">Add Category</Button>
+                            <Button type="warning" v-show="editMode" @click="updateCategory">Update Category</Button>
                           </div>
                       </Modal>
                   </template>
@@ -127,33 +130,36 @@ export default {
   data(){
     return{
       data:{
-        id: '',
+        id:'',
         name: '',
         image: '',
       },
-      modalAddTag: false,
+      modalCategory: false,
       errors: {},
       tags:[],
+      categories:[],
       title: '',
       editMode: false,
       token: ''
     }
   },
   methods:{
-    AddTags(){
-      this.modalAddTag = true;
-      this.title = "Add Tag";
+    AddCategory(){
+      this.modalCategory = true;
+      this.title = "Add Category";
       this.editMode = false;
     },
-    async addTag(){
-      const res = await this.callApi('post' , '/addTag' , this.data);
+    async insertCategory(){
+      const res = await this.callApi('post' , '/insertCategory' , this.data);
+
       if(res.status == 201)
       {
         this.success('Success' , 'Tag Added SuccessFully!!');
-        this.modalAddTag = false;
+        this.modalCategory = false;
         // this.getAllTags();
-        this.tags.unshift(res.data);
+        this.categories.unshift(res.data);
         this.data.name = '';
+        this.data.image = '';
       }else{
         this.errors = res.data.errors;
         console.log(res.data.errors);
@@ -163,28 +169,29 @@ export default {
         } 
       }
     },
-    async getAllTags(){
-      const res = await this.callApi('get' , '/getAllTags');
-      this.tags = res.data;
-      //console.log(res);
+    async getAllCategories(){
+      const res = await this.callApi('get' , '/getAllCategories');
+      this.categories = res.data;
+      console.log(res);
     },
-    edit(tag){
+    edit(category){
       let obj = {
-        id : tag.id,
-        name: tag.name
+        id : category.id,
+        name: category.name,
+        image: category.image
       }
-      this.modalAddTag = true;
-      this.title = "Edit Tag";
+      this.modalCategory = true;
+      this.title = "Edit Category";
       this.editMode = true;
       this.data = obj;
     },
-    async updateTag(){
-      const res = await this.callApi('post' , `/updateTag` , this.data);
+    async updateCategory(){
+      const res = await this.callApi('post' , `/updateCategory` , this.data);
       if(res.status == 200)
       {
-        this.success('Success' , 'Tag Updated SuccessFully!!');
-        this.modalAddTag = false;
-         this.getAllTags();
+        this.success('Success' , 'Category Updated SuccessFully!!');
+        this.modalCategory = false;
+         this.getAllCategories();
        // this.tags.unshift(res.data);
       }else{
         this.errors = res.data.errors;
@@ -195,13 +202,13 @@ export default {
         } 
       }
     },
-    async deleteTag(tag){
+    async deletecategory(category){
       if(!confirm('Are you sure to delete?'))return;
-        const res = await this.callApi('delete' , `/deleteTag/${tag.id}`);
+        const res = await this.callApi('delete' , `/deleteCategory/${category.id}`);
         if(res.status == 200)
         {
-          this.success('Success' , 'Tag Deleted SuccessFully!!');
-          this.getAllTags();
+          this.success('Success' , 'category Deleted SuccessFully!!');
+          this.getAllCategories();
           
           //this.tags.unshift(res.data);
         }
@@ -238,11 +245,11 @@ export default {
           this.data.image = image;
           this.sth();
         }
-        console.log();
+         this.success('Success' , 'Image Deleted SuccessFully!!');
       }
   },
   created(){
-      this.getAllTags();
+      this.getAllCategories();
       this.token = window.Laravel.csrfToken;
       
   }

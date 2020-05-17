@@ -17,6 +17,12 @@ Route::post('/uploadImage' , 'AdminController@uploadImage');
 Route::post('/deleteImage' , 'AdminController@deleteImage');
 Route::delete('/deleteTag/{id}' , 'AdminController@deleteTag');
 Route::get('/getAllTags' , 'AdminController@getAllTags');
+
+/* Category */
+Route::post('/insertCategory' , 'AdminController@insertCategory');
+Route::get('/getAllCategories' , 'AdminController@getAllCategories');
+Route::delete('/deleteCategory/{id}' , 'AdminController@deleteCategory');
+Route::post('/updateCategory' , 'AdminController@updateCategory');
 Route::any('{slug}' , function(){
     return view('welcome');
 });
