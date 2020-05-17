@@ -13,6 +13,9 @@ Route::get('/', function () {
 Route::get('new' , 'TestController@index');
 Route::post('/addTag' , 'AdminController@addTag');
 Route::post('/updateTag' , 'AdminController@updateTag');
+Route::post('/uploadImage' , 'AdminController@uploadImage');
+Route::post('/deleteImage' , 'AdminController@deleteImage');
+Route::delete('/deleteTag/{id}' , 'AdminController@deleteTag');
 Route::get('/getAllTags' , 'AdminController@getAllTags');
 Route::any('{slug}' , function(){
     return view('welcome');

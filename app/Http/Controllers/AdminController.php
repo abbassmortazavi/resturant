@@ -30,4 +30,20 @@ class AdminController extends Controller
     {
         return Tag::orderBy('id' , 'desc')->get();
     }
+    public function uploadImage(Request $request)
+    {
+        $file = time().'.'.$request->file->extension();
+        $path = '/uploads';
+        $request->file->move(public_path($path) , $file);
+        return $file;
+    }
+    public function deleteImage(Request $request)
+    {
+        $image = $request->image;
+        $path = public_path('/uploads/'.$image);
+        if(file_exists($path)){
+            unlink($path);
+        }
+        return 'done';
+    }
 }

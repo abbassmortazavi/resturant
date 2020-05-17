@@ -10,14 +10,14 @@
           <section class="col-lg-12">
             <div class="card card-info">
               <div class="card-header">
-                <h3 class="card-title">Tags</h3>
+                <h3 class="card-title">Category</h3>
               </div>
               <div class="card-body">
                 <div class="row">
                   <div class="col-12">
                     <div class="card">
                       <div class="card-header">
-                        <h3 class="card-title">Tags <Button @click="AddTags"><Icon type="md-add" />Add Tag</Button></h3>
+                        <h3 class="card-title">Category <Button @click="AddTags"><Icon type="md-add" />Add Category</Button></h3>
 
                         <div class="card-tools">
                           <div class="input-group input-group-sm" style="width: 150px;">
@@ -74,6 +74,30 @@
                           :title="title"
                           :closable="true"
                           >
+                          <Upload
+                            multiple
+                            type="drag"
+                            :headers= "{'x-csrf-token' : token , 'X-Requested-With' : 'XMLHttpRequest'}"
+                            :on-success="handleSuccess"
+                            :on-error="handleOnerror"
+                            :format="['jpg','jpeg','png']"
+                            :max-size="2048"
+                            :on-format-error="handleFormatError"
+                            :on-exceeded-size="handleMaxSize"
+                            action="/uploadImage">
+                            <div style="padding: 20px 0">
+                                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                                <p>Click or drag files here to upload</p>
+                            </div>
+                        </Upload>
+                        <div class="image_thumb" v-if="data.image">
+                          <div class="demo-upload-list-cover">
+                              <Icon type="md-trash" @click="deleteImage" />
+                              <img :src="`/uploads/${data.image}`"/>
+                          </div>
+                         
+                        </div>
+                        <div class="space"></div>
                            <Input v-model="data.name" placeholder="Enter something..." style="width: 300px" />
                            <small class="alert alert-danger" v-if="errors && errors.name">{{ errors.name[0] }}</small>
                           <div slot="footer">
@@ -105,12 +129,14 @@ export default {
       data:{
         id: '',
         name: '',
+        image: '',
       },
       modalAddTag: false,
       errors: {},
       tags:[],
       title: '',
-      editMode: false
+      editMode: false,
+      token: ''
     }
   },
   methods:{
@@ -120,13 +146,6 @@ export default {
       this.editMode = false;
     },
     async addTag(){
-      /* if(this.data.name.trim() == ''){
-        let message = 'field is empty!!';
-        this.modalAddTag = true;
-        this.errorData = message;
-        return this.error('error' , message);
-      } */
-      
       const res = await this.callApi('post' , '/addTag' , this.data);
       if(res.status == 201)
       {
@@ -186,11 +205,46 @@ export default {
           
           //this.tags.unshift(res.data);
         }
+      },
+  
+     handleSuccess (res, file) {
+          this.data.image = res;
+      },
+      handleFormatError (file) {
+          this.$Notice.warning({
+              title: 'The file format is incorrect',
+              desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+          });
+      },
+      handleOnerror(res, file){
+        this.$Notice.warning({
+              title: 'The file format is incorrect',
+              desc: 'File format of ' + file.errors.file[0] + ' is incorrect, please select jpg or png.'
+          });
+        console.log('res' , res);
+        console.log('file' , file);
+      },
+      handleMaxSize (file) {
+          this.$Notice.warning({
+              title: 'Exceeding file size limit',
+              desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+          });
+      },
+      async deleteImage(){
+        let image = this.data.image;
+        this.data.image = '';
+        const res = await this.callApi('post' , '/deleteImage' , {image:image});
+        if(res.status !=200){
+          this.data.image = image;
+          this.sth();
+        }
+        console.log();
       }
   },
   created(){
       this.getAllTags();
-      console.log(this.tags);
+      this.token = window.Laravel.csrfToken;
+      
   }
   
 }

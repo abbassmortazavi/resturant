@@ -3,9 +3,10 @@ import VueRouter from 'vue-router';
 import MainApp from './components/MainApp';
 
 
-//project Pages
+//Admin Pages
 import Home from './components/pages/Home';
-import Tags from './components/pages/Tags'
+import Tags from './admin/pages/Tags';
+import Category from './admin/pages/Category';
 
 Vue.use(VueRouter);
 
@@ -17,6 +18,10 @@ const routes = [
     {
         path: '/tags',
         component: Tags
+    }, 
+    {
+        path: '/category',
+        component: Category
     },
 ];
 
