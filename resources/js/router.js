@@ -7,6 +7,8 @@ import MainApp from './components/MainApp';
 import Home from './components/pages/Home';
 import Tags from './admin/pages/Tags';
 import Category from './admin/pages/Category';
+import User from './admin/pages/Users';
+import Login from './admin/pages/Login';
 
 Vue.use(VueRouter);
 
@@ -22,7 +24,15 @@ const routes = [
     {
         path: '/category',
         component: Category
-    },
+    }, 
+    {
+        path: '/users',
+        component: User
+    }, 
+    {
+        path: '/login',
+        component: Login
+    }
 ];
 
 const router = new VueRouter({

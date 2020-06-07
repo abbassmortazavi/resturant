@@ -23,6 +23,17 @@ Route::post('/insertCategory' , 'AdminController@insertCategory');
 Route::get('/getAllCategories' , 'AdminController@getAllCategories');
 Route::delete('/deleteCategory/{id}' , 'AdminController@deleteCategory');
 Route::post('/updateCategory' , 'AdminController@updateCategory');
+
+/* User */
+Route::post('/addUser' , 'AdminController@addUser');
+Route::get('/getAllUsers' , 'AdminController@getAllUsers');
+Route::delete('/deleteUser/{id}' , 'AdminController@deleteUser');
+Route::post('/updateUser' , 'AdminController@updateUser');
+
+/* Login */
+Route::post('/loginUser' , 'AdminController@loginUser');
+
+
 Route::any('{slug}' , function(){
     return view('welcome');
 });

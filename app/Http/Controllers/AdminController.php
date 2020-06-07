@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use App\Tag;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -93,5 +95,70 @@ class AdminController extends Controller
             'image'=>$image
         ]);
        
+    }
+
+
+    //User
+    public function addUser(Request $request)
+    {
+        $this->validate($request , [
+            'fullName'=>'required',
+            'email'=>'required',
+            'password'=>'required|min:4'
+        ]);
+        $password = bcrypt($request->password);
+        return User::create([
+            'fullName'=>$request->fullName,
+            'email'=>$request->email,
+            'password'=>$password,
+            'user_type'=>$request->user_type,
+        ]);
+    }
+    public function updateUser(Request $request)
+    {
+        $this->validate($request , [
+            'fullName'=>'required',
+            'email'=>'required',
+        ]);
+        $user = User::where('id' , $request->id)->first();
+        if ($user->password != $request->password){
+            $password = bcrypt($request->password);
+        }else{
+            $password =$user->password;
+        }
+        $user->update([
+            'fullName'=>$request->fullName,
+            'email'=>$request->email,
+            'password'=>$password,
+            'user_type'=>$request->user_type,
+        ]);
+       
+    }
+    public function getAllUsers()
+    {
+        return User::orderBy('id' , 'desc')->get();
+    }
+    public function deleteUser(Request $request)
+    {
+        return User::where('id' , $request->id)->delete();
+    }
+
+    public function loginUser(Request $request)
+    {
+        $this->validate($request , [
+            'email'=>'bail|required|email',
+            'password'=>'bail|required|min:4'
+        ]);
+
+        if(Auth::attempt(['email'=>$request->email , 'password'=>$request->password]))
+        {
+            return response()->json([
+                'message'=>"Login SuccessFull"
+            ]);
+        }else{
+            return response()->json([
+                'message'=>"Login Fail"
+            ], 401);
+        }
     }
 }
