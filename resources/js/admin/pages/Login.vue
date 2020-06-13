@@ -96,13 +96,15 @@ export default {
                 let message = 'Password length should be 4!';
                 return this.error('error' , message);
             } */
-
+            this.isLoggedIn = true;
             const res = await this.callApi('post' , '/loginUser' , this.data);
             this.errors = res.data.errors;
             if(res.status === 200)
             {
               this.isLoggedIn = true;
               this.success('Success' , res.data.message);
+              //this.$router.push({path:'/home'});
+                window.location = '/home';
             }else{
               if(res.status === 401){
                 this.isLoggedIn = false;
@@ -112,9 +114,9 @@ export default {
                 this.isLoggedIn = false;
                 this.error('error' , res.data.message);
               }
-               
+
             }
-            console.log(this.errors);
+            //console.log(res);
         }
     }
 }

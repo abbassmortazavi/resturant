@@ -20,15 +20,15 @@ const routes = [
     {
         path: '/tags',
         component: Tags
-    }, 
+    },
     {
         path: '/category',
         component: Category
-    }, 
+    },
     {
         path: '/users',
         component: User
-    }, 
+    },
     {
         path: '/login',
         component: Login

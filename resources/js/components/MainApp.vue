@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="wrapper" v-if="isLoggedIn">
+    <div class="wrapper" v-if="$store.state.isLoggedIn">
       <NavBar />
       <MainSideBar />
       <div class="content-wrapper">
@@ -35,7 +35,7 @@
             <div class="row">
               <!-- Left col -->
               <section class="col-lg-12">
-                <!-- <router-view></router-view> -->
+                <router-view></router-view>
               </section>
               <!-- /.Left col -->
             </div>
@@ -56,6 +56,7 @@ import NavBar from "./pages/section/NavBar";
 import MainSideBar from "./pages/section/MainSideBar";
 import Footer from "./pages/section/Footer";
 export default {
+  props:['user'],
   components: {
     NavBar,
     MainSideBar,
@@ -65,6 +66,10 @@ export default {
     return {
       isLoggedIn: false
     };
+  },
+  created(){
+    this.$store.commit('checkIsUserLoggedIn' , this.user);
+    //console.log(this.user);
   }
 };
 </script>

@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 Route::get('new' , 'TestController@index');
 Route::post('/addTag' , 'AdminController@addTag');
 Route::post('/updateTag' , 'AdminController@updateTag');
@@ -33,10 +33,13 @@ Route::post('/updateUser' , 'AdminController@updateUser');
 /* Login */
 Route::post('/loginUser' , 'AdminController@loginUser');
 
+Route::get('/' , 'AdminController@index');
+Route::get('/logout' , 'AdminController@logout');
+Route::get('{slug}' , 'AdminController@index');
 
-Route::any('{slug}' , function(){
-    return view('welcome');
-});
+// Route::any('{slug}' , function(){
+//     return view('welcome');
+// });
 
 Auth::routes();
 

@@ -10,6 +10,27 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+    public function index(Request $request)
+    {
+         //return Auth::check();
+        if(!Auth::check() && $request->path() != 'login')
+        {
+            return redirect('/login');
+        }
+       
+        if($request->path() == "login" && Auth::user()){
+            return redirect('/home');
+        }
+        return view('welcome');
+        //return $request->path();
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/login');
+    }
+
     public function addTag(Request $request)
     {
         $this->validate($request , [
@@ -152,8 +173,15 @@ class AdminController extends Controller
 
         if(Auth::attempt(['email'=>$request->email , 'password'=>$request->password]))
         {
+            $user = Auth::user();
+            if($user->user_type == "user"){
+                return response()->json([
+                    'message'=>"User is Not Admin!"
+                ], 401);
+            }
             return response()->json([
-                'message'=>"Login SuccessFull"
+                'message'=>"Login SuccessFull",
+                'user' => $user
             ]);
         }else{
             return response()->json([

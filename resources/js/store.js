@@ -1,6 +1,16 @@
 export default{
-    state:{},
-    getters:{},
-    actions:{},
-    mutations:{}
+    state:{
+        isLoggedIn: false
+    },
+    getters:{
+
+    },
+    actions:{
+
+    },
+    mutations:{
+        checkIsUserLoggedIn(state , data){
+            state.isLoggedIn = data;
+        }
+    }
 }
