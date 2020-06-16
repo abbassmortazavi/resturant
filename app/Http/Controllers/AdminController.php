@@ -28,7 +28,10 @@ class AdminController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect('/login');
+        return response()->json([
+            'message'=>"Logout SuccessFull"
+        ]);
+        //return redirect('/login');
     }
 
     public function addTag(Request $request)

@@ -66,6 +66,14 @@
                   </p>
               </router-link>
             </li>
+            <li class="nav-item">
+              <a @click="logout" class="nav-link">
+                 <i class="fas fa-sign-out-alt"></i>
+                  <p>
+                    Exit
+                  </p>
+              </a>
+            </li>
             <!-- <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-edit"></i>
@@ -128,5 +136,17 @@
   </div>
 </template>
 <script>
-export default {};
+export default {
+  methods:{
+    async logout(){
+      const res = await this.callApi('get' , '/logout');
+      {
+          
+          this.success('Success' , res.data.message);
+          this.$router.push({path:'/login'});
+              
+      }
+    }
+  }
+};
 </script>
